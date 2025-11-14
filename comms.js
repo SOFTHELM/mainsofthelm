@@ -1,4 +1,4 @@
-// Hover logic for placeholders
+// ===== Hover logic for placeholders (keep as is) =====
 const placeholderInputs = document.querySelectorAll('input[data-jp]');
 placeholderInputs.forEach(input => {
   const original = input.placeholder;
@@ -8,5 +8,64 @@ placeholderInputs.forEach(input => {
   input.addEventListener('mouseleave', () => input.placeholder = original);
 });
 
-// Optional: Hover effect for headings (English → Japanese) already handled by CSS using .hover-jp
-// Make sure your CSS includes .hover-jp rules for headings/text if needed
+// ===== AUTH LOGIC (login/signup) =====
+
+// Elements
+const loginForm = document.getElementById('login-form');
+const signupForm = document.getElementById('signup-form');
+const loginBtn = document.getElementById('login-btn');
+const signupBtn = document.getElementById('signup-btn');
+
+// Toggle forms
+loginBtn?.addEventListener('click', () => {
+  loginForm.style.display = 'block';
+  signupForm.style.display = 'none';
+});
+
+signupBtn?.addEventListener('click', () => {
+  signupForm.style.display = 'block';
+  loginForm.style.display = 'none';
+});
+
+// Helper function for API requests
+async function apiRequest(url, method, body, token) {
+  const res = await fetch(url, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && { 'Authorization': `Bearer ${token}` })
+    },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  return res.json();
+}
+
+// LOGIN
+loginForm?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const username = loginForm.username.value.trim();
+  const password = loginForm.password.value;
+
+  const data = await apiRequest('/api/auth/login', 'POST', { username, password });
+  if (data.error) return alert(data.error);
+
+  localStorage.setItem('token', data.token);
+  localStorage.setItem('username', username);
+  window.location.href = '/welcome.html';
+});
+
+// SIGNUP
+signupForm?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const username = signupForm.username.value.trim();
+  const email = signupForm.email.value.trim();
+  const realName = signupForm.realName.value.trim();
+  const password = signupForm.password.value;
+
+  const data = await apiRequest('/api/auth/signup', 'POST', { username, email, realName, password });
+  if (data.error) return alert(data.error);
+
+  localStorage.setItem('token', data.token);
+  localStorage.setItem('username', data.user.username);
+  window.location.href = '/welcome.html';
+});
