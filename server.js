@@ -14,17 +14,14 @@ app.use(express.urlencoded({ extended: true }));
 // Static uploads (local fallback)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// ⭐ Serve ALL front-end files ⭐
+app.use(express.static(__dirname));
+
 // Routes
 app.use('/api/auth', require('./auth'));
 app.use('/api/profile', require('./profile'));
 app.use('/api/positions', require('./positions'));
 app.use('/api', require('./uploads')); // for music
-
-// Optional SPA fallback if you serve front-end from backend
-// app.use(express.static(path.join(__dirname, 'public')));
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'public', 'index.html'));
-// });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server listening on ${PORT}`));
