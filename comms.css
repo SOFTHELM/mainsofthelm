@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Share Tech Mono', monospace;
+  overflow: hidden;
+}
+.page {
+  min-height: 100vh;
+  background: url('https://freight.cargo.site/t/original/i/0a2bb1c63d1d4a8140f6b8c50a67940a/cloud-bg.jpg') center/cover no-repeat fixed;
+  position: relative;
+  overflow: hidden;
+}
+.page::before {
+  content: "";
+  position: absolute;
+  top:0; left:0; right:0; bottom:0;
+  background: inherit;
+  filter: blur(8px) contrast(110%) brightness(1.1);
+  image-rendering: pixelated;
+  z-index:0;
+}

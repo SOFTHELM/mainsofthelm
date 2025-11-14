@@ -1,0 +1,10 @@
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Inconsolata', monospace;
+  color: white;
+  background: radial-gradient(circle at top left, rgba(180,180,255,0.1), rgba(20,20,30,0.9)),
+              url('https://freight.cargo.site/t/original/i/0a2bb1c63d1d4a8140f6b8c50a67940a/cloud-bg.jpg') center/cover no-repeat;
+}
