@@ -1,40 +1,38 @@
 const express = require('express');
-const router = express.Router();
-const db = require('../db');
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const db = require('./db');
 require('dotenv').config();
 
-// Sign-up
+const router = express.Router();
+
+// SIGNUP
 router.post('/signup', async (req, res) => {
+  const { username, password } = req.body;
+  if (!username || !password) return res.status(400).json({ error: 'Missing fields' });
+
   try {
-    const { username, password, realName, email } = req.body;
-    if (!username || !password || !email) return res.status(400).json({ error: 'username, password, and email required' });
-    const hashed = await bcrypt.hash(password, 12);
-    const result = await db.query(
-      'INSERT INTO users (username, real_name, email, password_hash) VALUES ($1,$2,$3,$4) RETURNING id, username, avatar_url',
-      [username, realName || null, email, hashed]
-    );
-    const user = result.rows[0];
-    const token = jwt.sign({ id: user.id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '30d' });
-    res.json({ token, user: { id: user.id, username: user.username, avatar: user.avatar_url } });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const result = await db.query('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword]);
+    const token = jwt.sign({ id: result.insertId, username }, process.env.JWT_SECRET, { expiresIn: '24h' });
+    res.json({ token });
   } catch (err) {
     console.error(err);
-    if (err.code === '23505') return res.status(409).json({ error: 'username or email already exists' });
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Database error' });
   }
 });
 
-// Login
+// LOGIN
 router.post('/login', async (req, res) => {
+  const { username, password } = req.body;
   try {
-    const { username, password } = req.body;
-    const q = await db.query('SELECT id, username, password_hash FROM users WHERE username=$1', [username]);
-    if (!q.rows.length) return res.status(401).json({ error: 'Invalid credentials' });
-    const user = q.rows[0];
-    const ok = await bcrypt.compare(password, user.password_hash);
-    if (!ok) return res.status(401).json({ error: 'Invalid credentials' });
-    const token = jwt.sign({ id: user.id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '30d' });
+    const [user] = await db.query('SELECT * FROM users WHERE username = ?', [username]);
+    if (!user) return res.status(401).json({ error: 'Invalid credentials' });
+
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.status(401).json({ error: 'Invalid credentials' });
+
+    const token = jwt.sign({ id: user.id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '24h' });
     res.json({ token });
   } catch (err) {
     console.error(err);
