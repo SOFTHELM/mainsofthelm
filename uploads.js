@@ -1,17 +1,44 @@
 const express = require('express');
-const multer = require('multer');
-const auth = require('./authMiddleware');
 const router = express.Router();
+const auth = require('./authMiddleware');
+const multer = require('multer');
+const db = require('./db');
+const storageUtil = require('./storage');
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'uploads/'),
-  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 50 * 1024 * 1024 } });
+
+// Upload music track
+router.post('/music', auth, upload.single('track'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+
+    const url = await storageUtil.uploadFile({
+      buffer: req.file.buffer,
+      filename: req.file.originalname,
+      mimetype: req.file.mimetype
+    });
+
+    const q = await db.query(
+      'INSERT INTO music (user_id, title, filename, url) VALUES ($1,$2,$3,$4) RETURNING id, url, title',
+      [req.user.id, req.body.title || req.file.originalname, req.file.originalname, url]
+    );
+
+    res.json(q.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Upload failed' });
+  }
 });
 
-const upload = multer({ storage });
-
-router.post('/upload', auth, upload.single('file'), (req, res) => {
-  res.json({ filename: req.file.filename, path: `/uploads/${req.file.filename}` });
+// List music tracks for user
+router.get('/music', auth, async (req, res) => {
+  try {
+    const q = await db.query('SELECT id, title, url FROM music WHERE user_id=$1 ORDER BY uploaded_at DESC', [req.user.id]);
+    res.json(q.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Database error' });
+  }
 });
 
 module.exports = router;
