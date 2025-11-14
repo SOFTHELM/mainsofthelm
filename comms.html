@@ -1,48 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
 <meta charset="UTF-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SOFTHELM NETWORK</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&amp;display=swap" rel="stylesheet">
-<link href="css/comms.css" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+
 <div class="page">
   <div class="page-content">
     <div class="form-box-wrapper">
+
       <!-- Main Box -->
-      <div class="form-box" id="main-box">
-        <span class="softhelm">SOFTHELM<br>AUTHENTICATION PORTAL</span>
-        <span style="--font-scale: 1.37; color: rgba(173, 163, 163, 0.85);">
-          <div class="logo-placeholder">✶</div>
-        </span>
+      <div id="main-box" class="form-box">
+        <span class="softhelm">SOFTHELM<br><span class="hover-jp" data-jp="認証ポータル">AUTHENTICATION PORTAL</span></span>
+        <div class="logo-placeholder">✶</div>
         <div class="button-group">
-          <button class="hover-btn" id="signInBtn">
+          <button id="signInBtn" class="hover-btn">
             <span class="default-text">Sign In</span>
-            <span class="jp-text"><span>戻</span><span>る</span></span>
+            <span class="jp-text">
+              <span>サ</span><span>イ</span><span>ン</span>
+            </span>
           </button>
-          <button class="hover-btn" id="newAccountBtn">
+          <button id="newAccountBtn" class="hover-btn">
             <span class="default-text">New Account</span>
-            <span class="jp-text"><span>新</span><span>規</span></span>
+            <span class="jp-text">
+              <span>新</span><span>規</span><span>ア</span><span>カ</span><span>ウ</span><span>ン</span><span>ト</span>
+            </span>
           </button>
         </div>
       </div>
+
       <!-- Sign In Box -->
-      <div class="form-box hidden" id="signin-box">
-        <div class="back-btn" onclick="goBack()">←</div>
-        <h3>SIGN IN</h3>
-        <input id="signin-username" placeholder="Username" type="text">
-        <input id="signin-password" placeholder="Password" type="password">
-        <button class="hover-btn" id="signinSubmit">Enter</button>
-        <div class="form-message" id="signin-message"></div>
+      <div id="signin-box" class="form-box hidden">
+        <div class="back-btn" id="backFromSignIn">← <span class="hover-jp" data-jp="戻る">Back</span></div>
+        <h3 class="hover-jp" data-jp="サインイン">SIGN IN</h3>
+        <input type="text" placeholder="Username" data-jp="ユーザー名" id="signin-username">
+        <input type="password" placeholder="Password" data-jp="パスワード" id="signin-password">
+        <button id="signinSubmit" class="hover-btn">
+          <span class="default-text">Enter</span>
+          <span class="jp-text"><span>入</span><span>る</span></span>
+        </button>
+        <div id="signin-message" class="form-message"></div>
       </div>
+
       <!-- New Account Box -->
-      <div class="form-box hidden" id="newaccount-box">
-        <div class="back-btn" onclick="goBack()">←</div>
-        <h3>NEW ACCOUNT</h3>
-        <input id="signup-username" placeholder="Create Username" type="text">
-        <input id="signup-password" placeholder="Create Password" type="password">
-        <input id="signup-confirm" placeholder="Confirm Password" type="password">
-        <button class="hover-btn" id="signupSubmit">Register</button>
-        <div class="form-message" id="signup-message"></div>
+      <div id="newaccount-box" class="form-box hidden">
+        <div class="back-btn" id="backFromSignup">← <span class="hover-jp" data-jp="戻る">Back</span></div>
+        <h3 class="hover-jp" data-jp="新規アカウント">NEW ACCOUNT</h3>
+        <input type="text" placeholder="First Name" data-jp="名" id="signup-firstname">
+        <input type="text" placeholder="Last Name" data-jp="姓" id="signup-lastname">
+        <input type="email" placeholder="Email" data-jp="メールアドレス" id="signup-email">
+        <input type="text" placeholder="Create Username" data-jp="ユーザー名作成" id="signup-username">
+        <input type="password" placeholder="Create Password" data-jp="パスワード作成" id="signup-password">
+        <input type="password" placeholder="Confirm Password" data-jp="パスワード確認" id="signup-confirm">
+        <button id="signupSubmit" class="hover-btn">
+          <span class="default-text">Register</span>
+          <span class="jp-text"><span>登</span><span>録</span></span>
+        </button>
+        <div id="signup-message" class="form-message"></div>
       </div>
+
     </div>
   </div>
 </div>
-<script src="js/comms.js"></script>
+
+<script>
+  // Minimal inline JS: form toggle
+  const mainBox = document.getElementById("main-box");
+  const signinBox = document.getElementById("signin-box");
+  const newaccountBox = document.getElementById("newaccount-box");
+
+  document.getElementById("signInBtn").addEventListener("click", () => {
+    mainBox.classList.add("hidden");
+    signinBox.classList.remove("hidden");
+  });
+
+  document.getElementById("newAccountBtn").addEventListener("click", () => {
+    mainBox.classList.add("hidden");
+    newaccountBox.classList.remove("hidden");
+  });
+
+  document.getElementById("backFromSignIn").addEventListener("click", () => {
+    signinBox.classList.add("hidden");
+    mainBox.classList.remove("hidden");
+  });
+
+  document.getElementById("backFromSignup").addEventListener("click", () => {
+    newaccountBox.classList.add("hidden");
+    mainBox.classList.remove("hidden");
+  });
+</script>
+
+</body>
+</html>
