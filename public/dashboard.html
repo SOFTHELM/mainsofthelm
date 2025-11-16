@@ -1,0 +1,69 @@
+
+
+
+<meta charset="UTF-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Softhelm Dashboard</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Happy+Times+at+the+IKOB&amp;family=VCR+OSD+Mono&amp;display=swap" rel="stylesheet">
+
+<!-- CSS -->
+<link href="dashboard.css" rel="stylesheet">
+
+
+
+<div class="dashboard">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <div class="wired-overlay"></div>
+    <img class="hero-pfp" id="userPFP" src="https://freight.cargo.site/t/original/i/H2642489096578820172494212336824/HTC-white-milady.png">
+
+    <div class="user-info-box">
+      <div class="username-field">
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Username: <input id="usernameDisplay" type="text">
+      </div>
+
+      <h1 id="displayName">Dragon Warrior</h1>
+      <p>Status: <span class="online">● Online</span></p>
+      <p>Level: <span id="userLevel">1</span></p>
+
+      <div class="achievement-buttons">
+        <button id="updatePFPBtn">Update Profile Picture</button>
+        <button id="unlockItemBtn">Unlock Achievement</button>
+      </div>
+
+      <h3>Legendary Items</h3>
+      <div class="legendary-items" id="legendaryList"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+    <div class="top-panels">
+      <div class="card">
+        <h2>Calendar</h2>
+        <p>Next Workout: <span id="nextWorkout">–</span></p>
+        <p>Next Ritual: <span id="nextRitual">–</span></p>
+      </div>
+
+      <div class="card">
+        <h2>Quests</h2>
+        <ul id="questList"></ul>
+      </div>
+    </div>
+
+    <div class="bottom-panel card">
+      <h2>Public Chat</h2>
+      <div class="chat-box" id="chatBox"></div>
+      <div class="chat-input-row">
+        <input id="chatInput" placeholder="Say something..." type="text">
+        <button id="sendBtn">Send</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
