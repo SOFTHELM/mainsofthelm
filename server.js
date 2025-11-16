@@ -14,8 +14,13 @@ app.use(express.urlencoded({ extended: true }));
 // Static uploads (local fallback)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// ⭐ Serve ALL front-end files ⭐
+// ⭐ Serve ALL front-end files from root ⭐
 app.use(express.static(__dirname));
+
+// ⭐ Default route — serve comms.html ⭐
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'comms.html'));
+});
 
 // Routes
 app.use('/api/auth', require('./auth'));
