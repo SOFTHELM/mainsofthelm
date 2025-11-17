@@ -1,0 +1,82 @@
+// backend/routes/rituals.js
+// Mount at app.use('/api/rituals', require('./routes/rituals'));
+
+const express = require('express');
+const router = express.Router();
+const db = require('../db');
+const { requireAuth } = require('../authMiddleware');
+
+// GET /api/rituals - list all rituals
+router.get('/', async (req, res) => {
+  try {
+    const q = await db.query('SELECT * FROM rituals ORDER BY id');
+    res.json({ success: true, rituals: q.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
+  }
+});
+
+// GET /api/rituals/sessions - user's scheduled sessions
+router.get('/sessions', requireAuth, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const q = await db.query('SELECT rs.*, r.name FROM ritual_sessions rs LEFT JOIN rituals r ON rs.ritual_id = r.id WHERE rs.user_id = $1 ORDER BY scheduled_at DESC', [userId]);
+    res.json({ success: true, sessions: q.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
+  }
+});
+
+// POST /api/rituals/sessions -> schedule a session { ritual_id, scheduled_at }
+router.post('/sessions', requireAuth, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { ritual_id, scheduled_at } = req.body;
+    const q = await db.query('INSERT INTO ritual_sessions (ritual_id, user_id, scheduled_at) VALUES ($1,$2,$3) RETURNING *', [ritual_id, userId, scheduled_at]);
+    res.json({ success: true, session: q.rows[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
+  }
+});
+
+// POST /api/rituals/sessions/:id/complete -> complete; body { result: {...} }
+router.post('/sessions/:id/complete', requireAuth, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const sessionId = req.params.id;
+    const { result } = req.body; // e.g. {"bench":100}
+
+    // update session
+    await db.query('UPDATE ritual_sessions SET completed_at = now(), result = $1 WHERE id=$2 AND user_id=$3', [result || {}, sessionId, userId]);
+
+    // award points and determine achievements: simple example logic
+    // Example: if result.bench >= 100 -> unlock achievement key 'bench_100'
+    if (result && typeof result.bench === 'number' && result.bench >= 100) {
+      const ach = await db.query("SELECT id FROM achievements WHERE key='bench_100' LIMIT 1");
+      if (ach.rows.length) {
+        const achId = ach.rows[0].id;
+        await db.query(`
+          INSERT INTO user_achievements (user_id, achievement_id)
+          SELECT $1,$2 WHERE NOT EXISTS (SELECT 1 FROM user_achievements WHERE user_id=$1 AND achievement_id=$2)
+        `, [userId, achId]);
+
+        // apply reward if it grants a trait
+        const rewardQ = await db.query('SELECT reward FROM achievements WHERE id = $1', [achId]);
+        if (rewardQ.rows[0] && rewardQ.rows[0].reward && rewardQ.rows[0].reward.grant_trait_id) {
+          const traitId = rewardQ.rows[0].reward.grant_trait_id;
+          await db.query('INSERT INTO user_avatar_traits (user_id, trait_id) VALUES ($1,$2) ON CONFLICT DO NOTHING', [userId, traitId]);
+        }
+      }
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
+  }
+});
+
+module.exports = router;
