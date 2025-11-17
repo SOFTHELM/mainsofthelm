@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', require('./auth'));
 app.use('/api/profile', require('./profile'));
 app.use('/api/positions', require('./positions'));
-app.use('/api', require('./uploads'));
+app.use('/api/uploads', require('./uploads'));
 
 // ===== Start server =====
 const PORT = process.env.PORT || 3000;
