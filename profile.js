@@ -1,44 +1,31 @@
+require('dotenv').config();
 const express = require('express');
-const router = express.Router();
-const auth = require('./authMiddleware');
-const db = require('./db');
-const multer = require('multer');
-const storageUtil = require('./storage'); // your storage.js
+const path = require('path');
+const helmet = require('helmet');
+const cors = require('cors');
 
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 8 * 1024 * 1024 } });
+const app = express();
 
-// Get current user profile
-router.get('/me', auth, async (req, res) => {
-  try {
-    const q = await db.query(
-      'SELECT id, username, real_name, email, avatar_url, created_at FROM users WHERE id=$1',
-      [req.user.id]
-    );
-    if (!q.rows.length) return res.status(404).json({ error: 'Not found' });
-    res.json(q.rows[0]);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Server error' });
-  }
+// ===== Middleware =====
+app.use(helmet());
+app.use(cors());
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ extended: true }));
+
+// ===== Serve static front-end files =====
+app.use(express.static(path.join(__dirname, '../public')));
+
+// ===== Default route =====
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/comms.html'));
 });
 
-// Upload avatar
-router.post('/avatar', auth, upload.single('avatar'), async (req, res) => {
-  try {
-    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+// ===== API routes (keep these if you need them later) =====
+app.use('/api/auth', require('./auth'));
+app.use('/api/profile', require('./profile'));
+app.use('/api/positions', require('./positions'));
+app.use('/api', require('./uploads'));
 
-    const url = await storageUtil.uploadFile({
-      buffer: req.file.buffer,
-      filename: req.file.originalname,
-      mimetype: req.file.mimetype
-    });
-
-    await db.query('UPDATE users SET avatar_url=$1 WHERE id=$2', [url, req.user.id]);
-    res.json({ avatar_url: url });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Upload failed' });
-  }
-});
-
-module.exports = router;
+// ===== Start server =====
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
