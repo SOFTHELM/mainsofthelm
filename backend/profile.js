@@ -1,31 +1,23 @@
-require('dotenv').config();
 const express = require('express');
-const path = require('path');
-const helmet = require('helmet');
-const cors = require('cors');
+const router = express.Router();
+const db = require('./db');
+const auth = require('./authMiddleware');
 
-const app = express();
+// ===== Get Profile =====
+router.get('/', auth, async (req, res) => {
+  const id = req.user.id;
 
-// ===== Middleware =====
-app.use(helmet());
-app.use(cors());
-app.use(express.json({ limit: '5mb' }));
-app.use(express.urlencoded({ extended: true }));
+  try {
+    const user = await db.query(
+      "SELECT firstname, lastname, email, username FROM users WHERE id = $1",
+      [id]
+    );
 
-// ===== Serve static front-end files =====
-app.use(express.static(path.join(__dirname, '../public')));
+    res.json(user.rows[0]);
 
-// ===== Default route =====
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/comms.html'));
+  } catch (err) {
+    res.status(500).json({ error: "Error fetching profile" });
+  }
 });
 
-// ===== API routes (keep these if you need them later) =====
-app.use('/api/auth', require('./auth'));
-app.use('/api/profile', require('./profile'));
-app.use('/api/positions', require('./positions'));
-app.use('/api', require('./uploads'));
-
-// ===== Start server =====
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+module.exports = router;
