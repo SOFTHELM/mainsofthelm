@@ -1,32 +1,31 @@
 require('dotenv').config();
 const express = require('express');
-const app = express();
+const path = require('path');
 const helmet = require('helmet');
 const cors = require('cors');
-const path = require('path');
 
-// Middleware
+const app = express();
+
+// ===== Middleware =====
 app.use(helmet());
 app.use(cors());
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Static uploads (local fallback)
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// ===== Serve static front-end files =====
+app.use(express.static(path.join(__dirname, '../public')));
 
-// ⭐ Serve ALL front-end files from root ⭐
-app.use(express.static(__dirname));
-
-// ⭐ Default route — serve comms.html ⭐
+// ===== Default route =====
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'comms.html'));
+  res.sendFile(path.join(__dirname, '../public/comms.html'));
 });
 
-// Routes
+// ===== API routes =====
 app.use('/api/auth', require('./auth'));
 app.use('/api/profile', require('./profile'));
 app.use('/api/positions', require('./positions'));
-app.use('/api', require('./uploads')); // for music
+app.use('/api', require('./uploads'));
 
+// ===== Start server =====
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server listening on ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
