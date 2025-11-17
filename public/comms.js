@@ -1,135 +1,102 @@
-// comms.js - UI toggles + register/login (full copy/paste ready)
-// Place this in public/comms.js and ensure comms.html references it.
-
-console.log('comms.js loaded');
-
+// ===== Form Toggle Logic =====
 const mainBox = document.getElementById("main-box");
 const signinBox = document.getElementById("signin-box");
 const newaccountBox = document.getElementById("newaccount-box");
 
-// Guard for pages where these don't exist
-function qs(id) { return document.getElementById(id); }
+document.getElementById("signInBtn").addEventListener("click", () => {
+  mainBox.classList.add("hidden");
+  signinBox.classList.remove("hidden");
+});
 
-if (qs('signInBtn')) {
-  qs('signInBtn').addEventListener("click", () => {
-    mainBox && mainBox.classList.add("hidden");
-    signinBox && signinBox.classList.remove("hidden");
-  });
-}
-if (qs('newAccountBtn')) {
-  qs('newAccountBtn').addEventListener("click", () => {
-    mainBox && mainBox.classList.add("hidden");
-    newaccountBox && newaccountBox.classList.remove("hidden");
-  });
-}
-if (qs('backFromSignIn')) {
-  qs('backFromSignIn').addEventListener("click", () => {
-    signinBox && signinBox.classList.add("hidden");
-    mainBox && mainBox.classList.remove("hidden");
-  });
-}
-if (qs('backFromSignup')) {
-  qs('backFromSignup').addEventListener("click", () => {
-    newaccountBox && newaccountBox.classList.add("hidden");
-    mainBox && mainBox.classList.remove("hidden");
-  });
-}
+document.getElementById("newAccountBtn").addEventListener("click", () => {
+  mainBox.classList.add("hidden");
+  newaccountBox.classList.remove("hidden");
+});
 
-// Placeholder hover for inputs (data-jp)
-document.querySelectorAll('input[data-jp]').forEach(input => {
+document.getElementById("backFromSignIn").addEventListener("click", () => {
+  signinBox.classList.add("hidden");
+  mainBox.classList.remove("hidden");
+});
+
+document.getElementById("backFromSignup").addEventListener("click", () => {
+  newaccountBox.classList.add("hidden");
+  mainBox.classList.remove("hidden");
+});
+
+// ===== Placeholder hover logic =====
+const placeholderInputs = document.querySelectorAll('input[data-jp]');
+placeholderInputs.forEach(input => {
   const original = input.placeholder;
-  const jp = input.dataset.jp;
+  const jp = input.getAttribute('data-jp');
+
   input.addEventListener('mouseenter', () => input.placeholder = jp);
   input.addEventListener('mouseleave', () => input.placeholder = original);
 });
 
-// Helper: show messages
-function showMessage(el, text, ok = true) {
-  if (!el) return;
-  el.style.color = ok ? 'lightgreen' : 'salmon';
-  el.textContent = text;
-}
-
-// --- Registration ---
-const signupBtn = qs('signupSubmit');
-const signupMsg = qs('signup-message');
-if (signupBtn) signupBtn.addEventListener('click', async (e) => {
-  e.preventDefault();
-  const firstname = qs('signup-firstname').value.trim();
-  const lastname  = qs('signup-lastname').value.trim();
-  const email     = qs('signup-email').value.trim();
-  const username  = qs('signup-username').value.trim();
-  const password  = qs('signup-password').value;
-  const confirm   = qs('signup-confirm').value;
-
-  if (!firstname || !lastname || !email || !username || !password) {
-    showMessage(signupMsg, 'Please fill all fields.', false);
-    return;
-  }
-  if (password !== confirm) {
-    showMessage(signupMsg, 'Passwords do not match.', false);
-    return;
-  }
+// ===== LOGIN =====
+document.getElementById("signinSubmit").addEventListener("click", async () => {
+  const username = document.getElementById("signin-username").value;
+  const password = document.getElementById("signin-password").value;
+  const messageBox = document.getElementById("signin-message");
 
   try {
-    const res = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ firstname, lastname, email, username, password })
-    });
-    const json = await res.json();
-    if (json.success) {
-      showMessage(signupMsg, json.message || 'Account created.', true);
-      // after a short delay, show sign-in
-      setTimeout(() => {
-        newaccountBox && newaccountBox.classList.add('hidden');
-        mainBox && mainBox.classList.remove('hidden');
-      }, 900);
-    } else {
-      showMessage(signupMsg, json.message || 'Registration failed.', false);
-    }
-  } catch (err) {
-    console.error(err);
-    showMessage(signupMsg, 'Network or server error.', false);
-  }
-});
-
-// --- Sign in ---
-const signinBtnEl = qs('signinSubmit');
-const signinMsg = qs('signin-message');
-if (signinBtnEl) signinBtnEl.addEventListener('click', async (e) => {
-  e.preventDefault();
-  const username = qs('signin-username').value.trim();
-  const password = qs('signin-password').value;
-
-  if (!username || !password) {
-    showMessage(signinMsg, 'Enter username and password.', false);
-    return;
-  }
-
-  try {
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password })
     });
-    const json = await res.json();
-    if (json.success && json.token) {
-      showMessage(signinMsg, 'Signed in.', true);
-      localStorage.setItem('token', json.token);
-      // redirect to welcome where user will build avatar
-      setTimeout(() => window.location.href = '/welcome.html', 400);
+    const data = await res.json();
+
+    if (data.success) {
+      messageBox.textContent = "Login successful!";
+      messageBox.style.color = "green";
+      // Redirect or show dashboard
     } else {
-      showMessage(signinMsg, json.message || 'Login failed.', false);
+      messageBox.textContent = data.message || "Login failed";
+      messageBox.style.color = "red";
     }
   } catch (err) {
+    messageBox.textContent = "Error connecting to server";
+    messageBox.style.color = "red";
     console.error(err);
-    showMessage(signinMsg, 'Network or server error.', false);
   }
 });
 
-// Optional: logout helper if you add a logout button later
-function logout() {
-  localStorage.removeItem('token');
-  window.location.href = '/comms.html';
-}
+// ===== REGISTER =====
+document.getElementById("signupSubmit").addEventListener("click", async () => {
+  const firstname = document.getElementById("signup-firstname").value;
+  const lastname = document.getElementById("signup-lastname").value;
+  const email = document.getElementById("signup-email").value;
+  const username = document.getElementById("signup-username").value;
+  const password = document.getElementById("signup-password").value;
+  const confirm = document.getElementById("signup-confirm").value;
+  const messageBox = document.getElementById("signup-message");
+
+  if (password !== confirm) {
+    messageBox.textContent = "Passwords do not match";
+    messageBox.style.color = "red";
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ firstname, lastname, email, username, password })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      messageBox.textContent = "Account created!";
+      messageBox.style.color = "green";
+      // Optionally, switch to login form
+    } else {
+      messageBox.textContent = data.message || "Registration failed";
+      messageBox.style.color = "red";
+    }
+  } catch (err) {
+    messageBox.textContent = "Error connecting to server";
+    messageBox.style.color = "red";
+    console.error(err);
+  }
+});
