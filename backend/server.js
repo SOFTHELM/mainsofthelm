@@ -1,9 +1,10 @@
 require('dotenv').config();
 const express = require('express');
-const app = express();
 const helmet = require('helmet');
 const cors = require('cors');
 const path = require('path');
+
+const app = express();
 
 // ===== Middleware =====
 app.use(helmet());
@@ -12,19 +13,19 @@ app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // ===== Serve static frontend =====
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // ===== Default route =====
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/comms.html'));
+  res.sendFile(path.join(__dirname, 'public/comms.html'));
 });
 
-// ===== API Routes =====
+// ===== API routes =====
 app.use('/api/auth', require('./auth'));
 app.use('/api/profile', require('./profile'));
 app.use('/api/positions', require('./positions'));
-app.use('/api', require('./uploads'));  // music upload
+app.use('/api/uploads', require('./uploads'));
 
-// ===== Start Server =====
+// ===== Start server =====
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
