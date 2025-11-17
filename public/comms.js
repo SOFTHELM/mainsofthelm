@@ -1,102 +1,87 @@
-// ===== Form Toggle Logic =====
-const mainBox = document.getElementById("main-box");
-const signinBox = document.getElementById("signin-box");
-const newaccountBox = document.getElementById("newaccount-box");
+(() => {
+  // ===== Form Elements =====
+  const mainBox = document.getElementById("main-box");
+  const signinBox = document.getElementById("signin-box");
+  const newaccountBox = document.getElementById("newaccount-box");
 
-document.getElementById("signInBtn").addEventListener("click", () => {
-  mainBox.classList.add("hidden");
-  signinBox.classList.remove("hidden");
-});
+  const signInBtn = document.getElementById("signInBtn");
+  const newAccountBtn = document.getElementById("newAccountBtn");
+  const backFromSignIn = document.getElementById("backFromSignIn");
+  const backFromSignup = document.getElementById("backFromSignup");
 
-document.getElementById("newAccountBtn").addEventListener("click", () => {
-  mainBox.classList.add("hidden");
-  newaccountBox.classList.remove("hidden");
-});
+  const signinSubmit = document.getElementById("signinSubmit");
+  const signupSubmit = document.getElementById("signupSubmit");
 
-document.getElementById("backFromSignIn").addEventListener("click", () => {
-  signinBox.classList.add("hidden");
-  mainBox.classList.remove("hidden");
-});
+  // ===== Toggle Forms =====
+  signInBtn.addEventListener("click", () => {
+    mainBox.classList.add("hidden");
+    signinBox.classList.remove("hidden");
+  });
 
-document.getElementById("backFromSignup").addEventListener("click", () => {
-  newaccountBox.classList.add("hidden");
-  mainBox.classList.remove("hidden");
-});
+  newAccountBtn.addEventListener("click", () => {
+    mainBox.classList.add("hidden");
+    newaccountBox.classList.remove("hidden");
+  });
 
-// ===== Placeholder hover logic =====
-const placeholderInputs = document.querySelectorAll('input[data-jp]');
-placeholderInputs.forEach(input => {
-  const original = input.placeholder;
-  const jp = input.getAttribute('data-jp');
+  backFromSignIn.addEventListener("click", () => {
+    signinBox.classList.add("hidden");
+    mainBox.classList.remove("hidden");
+  });
 
-  input.addEventListener('mouseenter', () => input.placeholder = jp);
-  input.addEventListener('mouseleave', () => input.placeholder = original);
-});
+  backFromSignup.addEventListener("click", () => {
+    newaccountBox.classList.add("hidden");
+    mainBox.classList.remove("hidden");
+  });
 
-// ===== LOGIN =====
-document.getElementById("signinSubmit").addEventListener("click", async () => {
-  const username = document.getElementById("signin-username").value;
-  const password = document.getElementById("signin-password").value;
-  const messageBox = document.getElementById("signin-message");
+  // ===== Placeholder hover text =====
+  document.querySelectorAll('input[data-jp]').forEach(input => {
+    const original = input.placeholder;
+    const jp = input.getAttribute('data-jp');
+    input.addEventListener('mouseenter', () => input.placeholder = jp);
+    input.addEventListener('mouseleave', () => input.placeholder = original);
+  });
 
-  try {
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+  // ===== LOGIN =====
+  signinSubmit.addEventListener("click", async () => {
+    const username = document.getElementById("signin-username").value;
+    const password = document.getElementById("signin-password").value;
+
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
     });
     const data = await res.json();
-
+    document.getElementById("signin-message").textContent = data.message || '';
     if (data.success) {
-      messageBox.textContent = "Login successful!";
-      messageBox.style.color = "green";
-      // Redirect or show dashboard
-    } else {
-      messageBox.textContent = data.message || "Login failed";
-      messageBox.style.color = "red";
+      alert("Login successful!"); // replace with redirect logic
     }
-  } catch (err) {
-    messageBox.textContent = "Error connecting to server";
-    messageBox.style.color = "red";
-    console.error(err);
-  }
-});
+  });
 
-// ===== REGISTER =====
-document.getElementById("signupSubmit").addEventListener("click", async () => {
-  const firstname = document.getElementById("signup-firstname").value;
-  const lastname = document.getElementById("signup-lastname").value;
-  const email = document.getElementById("signup-email").value;
-  const username = document.getElementById("signup-username").value;
-  const password = document.getElementById("signup-password").value;
-  const confirm = document.getElementById("signup-confirm").value;
-  const messageBox = document.getElementById("signup-message");
+  // ===== REGISTER =====
+  signupSubmit.addEventListener("click", async () => {
+    const firstname = document.getElementById("signup-firstname").value;
+    const lastname = document.getElementById("signup-lastname").value;
+    const email = document.getElementById("signup-email").value;
+    const username = document.getElementById("signup-username").value;
+    const password = document.getElementById("signup-password").value;
+    const confirm = document.getElementById("signup-confirm").value;
 
-  if (password !== confirm) {
-    messageBox.textContent = "Passwords do not match";
-    messageBox.style.color = "red";
-    return;
-  }
+    if (password !== confirm) {
+      document.getElementById("signup-message").textContent = "Passwords do not match";
+      return;
+    }
 
-  try {
-    const res = await fetch("/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ firstname, lastname, email, username, password })
     });
-    const data = await res.json();
 
+    const data = await res.json();
+    document.getElementById("signup-message").textContent = data.message || '';
     if (data.success) {
-      messageBox.textContent = "Account created!";
-      messageBox.style.color = "green";
-      // Optionally, switch to login form
-    } else {
-      messageBox.textContent = data.message || "Registration failed";
-      messageBox.style.color = "red";
+      alert("Account created!"); // replace with redirect logic
     }
-  } catch (err) {
-    messageBox.textContent = "Error connecting to server";
-    messageBox.style.color = "red";
-    console.error(err);
-  }
-});
+  });
+})();
