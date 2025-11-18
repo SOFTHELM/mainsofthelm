@@ -1,17 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Softhelm Dashboard</title>
 
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Happy+Times+at+the+IKOB&family=VCR+OSD+Mono&display=swap" rel="stylesheet">
 
-
-<meta charset="UTF-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>Softhelm Dashboard</title>
-
-<!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Happy+Times+at+the+IKOB&amp;family=VCR+OSD+Mono&amp;display=swap" rel="stylesheet">
-
-<!-- CSS -->
-<link href="dashboard.css" rel="stylesheet">
-
-
+  <!-- CSS -->
+  <link href="dashboard.css" rel="stylesheet">
+</head>
+<body>
 
 <div class="dashboard">
 
@@ -22,16 +22,17 @@
 
     <div class="user-info-box">
       <div class="username-field">
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Username: <input id="usernameDisplay" type="text">
+        Username: <input id="usernameDisplay" type="text" readonly>
       </div>
 
-      <h1 id="displayName">Dragon Warrior</h1>
+      <h1 id="displayName"></h1>
       <p>Status: <span class="online">● Online</span></p>
       <p>Level: <span id="userLevel">1</span></p>
 
       <div class="achievement-buttons">
         <button id="updatePFPBtn">Update Profile Picture</button>
         <button id="unlockItemBtn">Unlock Achievement</button>
+        <button id="enterRealmBtn">Enter Realm</button>
       </div>
 
       <h3>Legendary Items</h3>
@@ -66,4 +67,20 @@
 
 </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Load username from localStorage
+  const username = localStorage.getItem('softhelmUsername') || 'Guest';
+  document.getElementById('usernameDisplay').value = username;
+  document.getElementById('displayName').innerText = username;
 
+  // Enter Realm button
+  document.getElementById('enterRealmBtn').addEventListener('click', () => {
+    alert('Entering the Realm!'); // Replace with actual redirect if needed
+    // window.location.href = 'some_other_page.html';
+  });
+});
+</script>
+
+</body>
+</html>
