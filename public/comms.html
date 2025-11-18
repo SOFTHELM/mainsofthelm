@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SOFTHELM NETWORK</title>
 
-  <!-- Load CSS from jsDelivr (serves files straight from your GitHub repo) -->
+  <!-- Load CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/SOFTHELM/mainsofthelm@main/public/comms.css">
 </head>
 <body>
@@ -14,49 +14,47 @@
   <div class="page-content">
     <div class="form-box-wrapper">
 
-      <!-- Main Box -->
+      <!-- MAIN BOX -->
       <div class="form-box" id="main-box">
-        <span class="softhelm">SOFTHELM<br><span class="hover-jp" data-jp="認証ポータル">AUTHENTICATION PORTAL</span></span>
+        <span class="softhelm">SOFTHELM<br>
+          <span class="hover-jp" data-jp="認証ポータル">AUTH PORTAL</span>
+        </span>
         <div class="logo-placeholder">✶</div>
+
         <div class="button-group">
-          <button class="hover-btn" id="signInBtn">
-            <span class="default-text">Sign In</span>
-            <span class="jp-text"><span>サ</span><span>イ</span><span>ン</span></span>
-          </button>
-          <button class="hover-btn" id="newAccountBtn">
-            <span class="default-text">New Account</span>
-            <span class="jp-text"><span>新</span><span>規</span><span>ア</span><span>カ</span><span>ウ</span><span>ン</span><span>ト</span></span>
-          </button>
+          <button class="hover-btn" id="signInBtn">Sign In</button>
+          <button class="hover-btn" id="newAccountBtn">New Account</button>
         </div>
       </div>
 
-      <!-- Sign In Box -->
+      <!-- SIGN IN -->
       <div class="form-box hidden" id="signin-box">
-        <div class="back-btn" id="backFromSignIn">← <span class="hover-jp" data-jp="戻る">Back</span></div>
-        <h3 class="hover-jp" data-jp="サインイン">SIGN IN</h3>
-        <input data-jp="ユーザー名" id="signin-username" placeholder="Username" type="text">
-        <input data-jp="パスワード" id="signin-password" placeholder="Password" type="password">
-        <button class="hover-btn" id="signinSubmit">
-          <span class="default-text">Enter</span>
-          <span class="jp-text"><span>入</span><span>る</span></span>
-        </button>
+        <div class="back-btn" id="backFromSignIn">← Back</div>
+        <h3>SIGN IN</h3>
+
+        <input id="signin-username" placeholder="Username" type="text">
+        <input id="signin-password" placeholder="Password" type="password">
+
+        <button class="hover-btn" id="signinSubmit">Enter</button>
+
         <div class="form-message" id="signin-message"></div>
       </div>
 
-      <!-- New Account Box -->
+      <!-- SIGN UP -->
       <div class="form-box hidden" id="newaccount-box">
-        <div class="back-btn" id="backFromSignup">← <span class="hover-jp" data-jp="戻る">Back</span></div>
-        <h3 class="hover-jp" data-jp="新規アカウント">NEW ACCOUNT</h3>
-        <input data-jp="名" id="signup-firstname" placeholder="First Name" type="text">
-        <input data-jp="姓" id="signup-lastname" placeholder="Last Name" type="text">
-        <input data-jp="メールアドレス" id="signup-email" placeholder="Email" type="email">
-        <input data-jp="ユーザー名作成" id="signup-username" placeholder="Create Username" type="text">
-        <input data-jp="パスワード作成" id="signup-password" placeholder="Create Password" type="password">
-        <input data-jp="パスワード確認" id="signup-confirm" placeholder="Confirm Password" type="password">
-        <button class="hover-btn" id="signupSubmit">
-          <span class="default-text">Register</span>
-          <span class="jp-text"><span>登</span><span>録</span></span>
-        </button>
+        <div class="back-btn" id="backFromSignup">← Back</div>
+
+        <h3>NEW ACCOUNT</h3>
+
+        <input id="signup-firstname" placeholder="First Name" type="text">
+        <input id="signup-lastname" placeholder="Last Name" type="text">
+        <input id="signup-email" placeholder="Email" type="email">
+        <input id="signup-username" placeholder="Create Username" type="text">
+        <input id="signup-password" placeholder="Create Password" type="password">
+        <input id="signup-confirm" placeholder="Confirm Password" type="password">
+
+        <button class="hover-btn" id="signupSubmit">Register</button>
+
         <div class="form-message" id="signup-message"></div>
       </div>
 
@@ -64,7 +62,8 @@
   </div>
 </div>
 
-<!-- Load JS from jsDelivr -->
+<!-- Load JS (ONLY ONCE) -->
 <script src="https://cdn.jsdelivr.net/gh/SOFTHELM/mainsofthelm@main/public/comms.js" defer></script>
+
 </body>
 </html>
