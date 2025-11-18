@@ -1,49 +1,53 @@
-document.addEventListener('DOMContentLoaded', () => {
+// comms.js
+document.addEventListener('DOMContentLoaded', function() {
   // Elements
-  const mainBox = document.getElementById('main-box');
-  const signinBox = document.getElementById('signin-box');
-  const newAccountBox = document.getElementById('newaccount-box');
+  const mainBoxEl = document.getElementById('main-box');
+  const signinBoxEl = document.getElementById('signin-box');
+  const newAccountBoxEl = document.getElementById('newaccount-box');
 
-  const signInBtn = document.getElementById('signInBtn');
-  const newAccountBtn = document.getElementById('newAccountBtn');
+  const signInBtnEl = document.getElementById('signInBtn');
+  const newAccountBtnEl = document.getElementById('newAccountBtn');
 
-  const backFromSignIn = document.getElementById('backFromSignIn');
-  const backFromSignup = document.getElementById('backFromSignup');
+  const backFromSignInEl = document.getElementById('backFromSignIn');
+  const backFromSignupEl = document.getElementById('backFromSignup');
 
-  const signinSubmit = document.getElementById('signinSubmit');
-  const signupSubmit = document.getElementById('signupSubmit');
+  const signinSubmitEl = document.getElementById('signinSubmit');
+  const signupSubmitEl = document.getElementById('signupSubmit');
 
   // Show Sign In form
-  signInBtn.addEventListener('click', () => {
-    mainBox.classList.add('hidden');
-    signinBox.classList.remove('hidden');
+  if(signInBtnEl) signInBtnEl.addEventListener('click', function() {
+    mainBoxEl.classList.add('hidden');
+    signinBoxEl.classList.remove('hidden');
   });
 
   // Show New Account form
-  newAccountBtn.addEventListener('click', () => {
-    mainBox.classList.add('hidden');
-    newAccountBox.classList.remove('hidden');
+  if(newAccountBtnEl) newAccountBtnEl.addEventListener('click', function() {
+    mainBoxEl.classList.add('hidden');
+    newAccountBoxEl.classList.remove('hidden');
   });
 
   // Go back to main
-  backFromSignIn.addEventListener('click', () => {
-    signinBox.classList.add('hidden');
-    mainBox.classList.remove('hidden');
+  if(backFromSignInEl) backFromSignInEl.addEventListener('click', function() {
+    signinBoxEl.classList.add('hidden');
+    mainBoxEl.classList.remove('hidden');
   });
 
-  backFromSignup.addEventListener('click', () => {
-    newAccountBox.classList.add('hidden');
-    mainBox.classList.remove('hidden');
+  if(backFromSignupEl) backFromSignupEl.addEventListener('click', function() {
+    newAccountBoxEl.classList.add('hidden');
+    mainBoxEl.classList.remove('hidden');
   });
 
-  // Redirect buttons
-  signinSubmit.addEventListener('click', (e) => {
+  // Sign In -> dashboard
+  if(signinSubmitEl) signinSubmitEl.addEventListener('click', function(e) {
     e.preventDefault();
+    // TODO: Replace with API login call later
     window.location.href = 'dashboard.html';
   });
 
-  signupSubmit.addEventListener('click', (e) => {
+  // New Account -> welcome
+  if(signupSubmitEl) signupSubmitEl.addEventListener('click', function(e) {
     e.preventDefault();
+    // TODO: Replace with API signup call later
     window.location.href = 'welcome.html';
   });
 });
