@@ -1,6 +1,5 @@
-// comms.js
 document.addEventListener('DOMContentLoaded', () => {
-  // Grab elements
+  // Elements
   const mainBox = document.getElementById('main-box');
   const signinBox = document.getElementById('signin-box');
   const newAccountBox = document.getElementById('newaccount-box');
@@ -26,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     newAccountBox.classList.remove('hidden');
   });
 
-  // Back buttons
+  // Go back to main
   backFromSignIn.addEventListener('click', () => {
     signinBox.classList.add('hidden');
     mainBox.classList.remove('hidden');
@@ -37,17 +36,14 @@ document.addEventListener('DOMContentLoaded', () => {
     mainBox.classList.remove('hidden');
   });
 
-  // Enter button on Sign In
+  // Redirect buttons
   signinSubmit.addEventListener('click', (e) => {
     e.preventDefault();
-    // Here you can later add API call to backend for real login
     window.location.href = 'dashboard.html';
   });
 
-  // Register button on New Account
   signupSubmit.addEventListener('click', (e) => {
     e.preventDefault();
-    // Here you can later add API call to backend for registration
     window.location.href = 'welcome.html';
   });
 });
