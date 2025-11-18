@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Welcome to Softhelm</title>
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-
-  <!-- CSS -->
-  <link href="welcome.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/SOFTHELM/mainsofthelm@main/public/welcome.css">
 </head>
 <body>
 
@@ -20,17 +16,24 @@
   </div>
 
   <div class="generator-content">
-    <section class="left-panel">Left panel traits...</section>
-    <section class="right-panel">PFP preview...</section>
+    <section class="left-panel">
+      Trait selection coming soon...
+    </section>
+
+    <section class="right-panel">
+      PFP preview coming soon...
+    </section>
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/gh/SOFTHELM/mainsofthelm@main/public/welcome.js" defer></script>
+
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  // Load username from localStorage
-  const username = localStorage.getItem('softhelmUsername') || 'Guest';
-  document.getElementById('username-display').innerText = username;
-});
+  // Load username from signup form → URL
+  const params = new URLSearchParams(window.location.search);
+  const user = params.get("user") || "New User";
+
+  document.getElementById("username-display").textContent = user;
 </script>
 
 </body>
