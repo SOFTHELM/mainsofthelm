@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SOFTHELM NETWORK</title>
-  <!-- Load CSS from GitHub CDN -->
-  <link href="https://cdn.jsdelivr.net/gh/SOFTHELM/mainsofthelm@main/public/comms.css" rel="stylesheet">
+
+  <!-- CSS from GitHub (optional) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/SOFTHELM/mainsofthelm@main/public/comms.css">
 </head>
 <body>
 
@@ -20,40 +21,51 @@
         <div class="button-group">
           <button id="signInBtn" class="hover-btn">
             <span class="default-text">Sign In</span>
+            <span class="jp-text"><span>サ</span><span>イ</span><span>ン</span></span>
           </button>
           <button id="newAccountBtn" class="hover-btn">
             <span class="default-text">New Account</span>
+            <span class="jp-text"><span>新</span><span>規</span><span>ア</span><span>カ</span><span>ウ</span><span>ン</span><span>ト</span></span>
           </button>
         </div>
       </div>
 
       <!-- Sign In Box -->
       <div id="signin-box" class="form-box hidden">
-        <div id="backFromSignIn" class="back-btn">← Back</div>
-        <h3>SIGN IN</h3>
-        <input type="text" placeholder="Username" id="signin-username">
-        <input type="password" placeholder="Password" id="signin-password">
-        <button id="signinSubmit" class="hover-btn">Enter</button>
+        <div id="backFromSignIn" class="back-btn">← <span class="hover-jp" data-jp="戻る">Back</span></div>
+        <h3 class="hover-jp" data-jp="サインイン">SIGN IN</h3>
+        <input type="text" placeholder="Username" id="signin-username" data-jp="ユーザー名">
+        <input type="password" placeholder="Password" id="signin-password" data-jp="パスワード">
+        <button id="signinSubmit" class="hover-btn">
+          <span class="default-text">Enter</span>
+          <span class="jp-text"><span>入</span><span>る</span></span>
+        </button>
+        <div id="signin-message" class="form-message"></div>
       </div>
 
       <!-- New Account Box -->
       <div id="newaccount-box" class="form-box hidden">
-        <div id="backFromSignup" class="back-btn">← Back</div>
-        <h3>NEW ACCOUNT</h3>
-        <input type="text" placeholder="First Name" id="signup-firstname">
-        <input type="text" placeholder="Last Name" id="signup-lastname">
-        <input type="email" placeholder="Email" id="signup-email">
-        <input type="text" placeholder="Username" id="signup-username">
-        <input type="password" placeholder="Password" id="signup-password">
-        <input type="password" placeholder="Confirm Password" id="signup-confirm">
-        <button id="signupSubmit" class="hover-btn">Register</button>
+        <div id="backFromSignup" class="back-btn">← <span class="hover-jp" data-jp="戻る">Back</span></div>
+        <h3 class="hover-jp" data-jp="新規アカウント">NEW ACCOUNT</h3>
+        <input type="text" placeholder="First Name" id="signup-firstname" data-jp="名">
+        <input type="text" placeholder="Last Name" id="signup-lastname" data-jp="姓">
+        <input type="email" placeholder="Email" id="signup-email" data-jp="メールアドレス">
+        <input type="text" placeholder="Create Username" id="signup-username" data-jp="ユーザー名作成">
+        <input type="password" placeholder="Create Password" id="signup-password" data-jp="パスワード作成">
+        <input type="password" placeholder="Confirm Password" id="signup-confirm" data-jp="パスワード確認">
+        <button id="signupSubmit" class="hover-btn">
+          <span class="default-text">Register</span>
+          <span class="jp-text"><span>登</span><span>録</span></span>
+        </button>
+        <div id="signup-message" class="form-message"></div>
       </div>
 
     </div>
   </div>
 </div>
 
-<!-- Load JS from GitHub CDN -->
+<!-- JS -->
 <script src="https://cdn.jsdelivr.net/gh/SOFTHELM/mainsofthelm@main/public/comms.js" defer></script>
+
 </body>
 </html>
