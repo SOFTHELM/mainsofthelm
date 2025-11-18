@@ -11,6 +11,7 @@
 
   const signinSubmit = document.getElementById("signinSubmit");
   const signupSubmit = document.getElementById("signupSubmit");
+  const enterRealmBtn = document.getElementById("enterRealmBtn"); // optional if exists
 
   // ===== Toggle Forms =====
   signInBtn.addEventListener("click", () => {
@@ -33,14 +34,6 @@
     mainBox.classList.remove("hidden");
   });
 
-  // ===== Placeholder hover text =====
-  document.querySelectorAll('input[data-jp]').forEach(input => {
-    const original = input.placeholder;
-    const jp = input.getAttribute('data-jp');
-    input.addEventListener('mouseenter', () => input.placeholder = jp);
-    input.addEventListener('mouseleave', () => input.placeholder = original);
-  });
-
   // ===== LOGIN =====
   signinSubmit.addEventListener("click", async () => {
     const username = document.getElementById("signin-username").value;
@@ -54,7 +47,8 @@
     const data = await res.json();
     document.getElementById("signin-message").textContent = data.message || '';
     if (data.success) {
-      alert("Login successful!"); // replace with redirect logic
+      // Redirect to dashboard
+      window.location.href = "dashboard.html";
     }
   });
 
@@ -81,7 +75,15 @@
     const data = await res.json();
     document.getElementById("signup-message").textContent = data.message || '';
     if (data.success) {
-      alert("Account created!"); // replace with redirect logic
+      // Redirect to welcome page
+      window.location.href = "welcome.html";
     }
   });
+
+  // ===== Optional Enter Realm button =====
+  if (enterRealmBtn) {
+    enterRealmBtn.addEventListener("click", () => {
+      window.location.href = "dashboard.html";
+    });
+  }
 })();
