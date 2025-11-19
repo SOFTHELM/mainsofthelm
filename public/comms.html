@@ -4,95 +4,51 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SOFTHELM NETWORK</title>
+<link rel="stylesheet" href="comms.css">
 </head>
 <body>
 
-<div id="main-box">
-  <h1>SOFTHELM NETWORK</h1>
-  <button id="signInBtn">Sign In</button>
-  <button id="newAccountBtn">New Account</button>
+<div class="page">
+  <div class="page-content">
+    <div class="form-box-wrapper">
+
+      <!-- Main Box -->
+      <div id="main-box" class="form-box">
+        <h1>SOFTHELM NETWORK</h1>
+        <div class="button-group">
+          <button id="signInBtn" class="hover-btn">Sign In</button>
+          <button id="newAccountBtn" class="hover-btn">New Account</button>
+        </div>
+      </div>
+
+      <!-- Sign In Box -->
+      <div id="signin-box" class="form-box hidden">
+        <h2>Sign In</h2>
+        <input type="text" id="signin-username" placeholder="Username">
+        <input type="password" id="signin-password" placeholder="Password">
+        <button id="signinSubmit" class="hover-btn">Enter</button>
+        <button id="backFromSignIn" class="hover-btn">Back</button>
+        <div id="signin-message" class="form-message"></div>
+      </div>
+
+      <!-- New Account Box -->
+      <div id="newaccount-box" class="form-box hidden">
+        <h2>New Account</h2>
+        <input type="text" id="signup-firstname" placeholder="First Name">
+        <input type="text" id="signup-lastname" placeholder="Last Name">
+        <input type="email" id="signup-email" placeholder="Email">
+        <input type="text" id="signup-username" placeholder="Username">
+        <input type="password" id="signup-password" placeholder="Password">
+        <input type="password" id="signup-confirm" placeholder="Confirm Password">
+        <button id="signupSubmit" class="hover-btn">Register</button>
+        <button id="backFromSignup" class="hover-btn">Back</button>
+        <div id="signup-message" class="form-message"></div>
+      </div>
+
+    </div>
+  </div>
 </div>
 
-<div id="signin-box" style="display:none;">
-  <h2>Sign In</h2>
-  <input type="text" id="signin-username" placeholder="Username">
-  <input type="password" id="signin-password" placeholder="Password">
-  <button id="signinSubmit">Enter</button>
-  <button id="backFromSignIn">Back</button>
-  <div id="signin-message"></div>
-</div>
-
-<div id="newaccount-box" style="display:none;">
-  <h2>New Account</h2>
-  <input type="text" id="signup-username" placeholder="Username">
-  <input type="password" id="signup-password" placeholder="Password">
-  <button id="signupSubmit">Register</button>
-  <button id="backFromSignup">Back</button>
-  <div id="signup-message"></div>
-</div>
-
-<script>
-const backendURL = "https://mainsofthelm.onrender.com";
-
-const mainBox = document.getElementById('main-box');
-const signinBox = document.getElementById('signin-box');
-const newAccountBox = document.getElementById('newaccount-box');
-
-const signInBtn = document.getElementById('signInBtn');
-const newAccountBtn = document.getElementById('newAccountBtn');
-const backFromSignIn = document.getElementById('backFromSignIn');
-const backFromSignup = document.getElementById('backFromSignup');
-
-const signinSubmit = document.getElementById('signinSubmit');
-const signupSubmit = document.getElementById('signupSubmit');
-
-signInBtn.onclick = () => { mainBox.style.display = 'none'; signinBox.style.display = 'block'; };
-newAccountBtn.onclick = () => { mainBox.style.display = 'none'; newAccountBox.style.display = 'block'; };
-backFromSignIn.onclick = () => { signinBox.style.display = 'none'; mainBox.style.display = 'block'; };
-backFromSignup.onclick = () => { newAccountBox.style.display = 'none'; mainBox.style.display = 'block'; };
-
-signinSubmit.onclick = async () => {
-  const username = document.getElementById('signin-username').value;
-  const password = document.getElementById('signin-password').value;
-
-  try {
-    const res = await fetch(`${backendURL}/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    });
-    const data = await res.json();
-    if (data.success) {
-      window.location.href = 'welcome.html';
-    } else {
-      document.getElementById('signin-message').innerText = data.message || 'Login failed';
-    }
-  } catch (e) {
-    document.getElementById('signin-message').innerText = 'Server error';
-  }
-};
-
-signupSubmit.onclick = async () => {
-  const username = document.getElementById('signup-username').value;
-  const password = document.getElementById('signup-password').value;
-
-  try {
-    const res = await fetch(`${backendURL}/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    });
-    const data = await res.json();
-    if (data.success) {
-      window.location.href = 'welcome.html';
-    } else {
-      document.getElementById('signup-message').innerText = data.message || 'Registration failed';
-    }
-  } catch (e) {
-    document.getElementById('signup-message').innerText = 'Server error';
-  }
-};
-</script>
-
+<script src="comms.js" defer></script>
 </body>
 </html>
