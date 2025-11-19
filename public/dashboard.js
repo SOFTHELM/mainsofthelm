@@ -1,57 +1,81 @@
-// comms.js
-document.addEventListener('DOMContentLoaded', () => {
-  const mainBox = document.getElementById('main-box');
-  const signinBox = document.getElementById('signin-box');
-  const newAccountBox = document.getElementById('newaccount-box');
+const backendURL = "https://mainsofthelm.onrender.com";
+let username = localStorage.getItem('softhelmUsername') || 'Initiate';
 
-  const signInBtn = document.getElementById('signInBtn');
-  const newAccountBtn = document.getElementById('newAccountBtn');
+// Display username
+const displayNameEl = document.getElementById('displayName');
+const usernameInput = document.getElementById('usernameDisplay');
+displayNameEl.innerText = username;
+usernameInput.value = username;
 
-  const backFromSignIn = document.getElementById('backFromSignIn');
-  const backFromSignup = document.getElementById('backFromSignup');
+// Load user data from server
+async function loadUserData() {
+  try {
+    const res = await fetch(`${backendURL}/getUserData?username=${username}`);
+    const data = await res.json();
+    
+    document.getElementById('userLevel').innerText = data.level || 1;
 
-  const signinSubmit = document.getElementById('signinSubmit');
-  const signupSubmit = document.getElementById('signupSubmit');
+    const listDiv = document.getElementById('legendaryItems');
+    listDiv.innerHTML = '';
+    (data.items || []).forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'item-box';
+      div.innerText = item;
+      listDiv.appendChild(div);
+    });
 
-  const signinUsernameInput = document.getElementById('signin-username');
-  const signupUsernameInput = document.getElementById('signup-username');
+  } catch (err) {
+    console.error('Failed to load user data', err);
+  }
+}
 
-  // Show Sign In form
-  signInBtn.addEventListener('click', () => {
-    mainBox.classList.add('hidden');
-    signinBox.classList.remove('hidden');
-  });
+// Auto-save username when changed
+usernameInput.addEventListener('change', async () => {
+  const newUsername = usernameInput.value.trim();
+  if (!newUsername || newUsername === username) return;
 
-  // Show New Account form
-  newAccountBtn.addEventListener('click', () => {
-    mainBox.classList.add('hidden');
-    newAccountBox.classList.remove('hidden');
-  });
+  try {
+    const res = await fetch(`${backendURL}/updateUsername`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ oldUsername: username, newUsername })
+    });
+    const data = await res.json();
 
-  // Go back to main
-  backFromSignIn.addEventListener('click', () => {
-    signinBox.classList.add('hidden');
-    mainBox.classList.remove('hidden');
-  });
-
-  backFromSignup.addEventListener('click', () => {
-    newAccountBox.classList.add('hidden');
-    mainBox.classList.remove('hidden');
-  });
-
-  // Sign In -> Dashboard
-  signinSubmit.addEventListener('click', (e) => {
-    e.preventDefault();
-    const username = signinUsernameInput.value.trim();
-    if (username) localStorage.setItem('softhelmUsername', username);
-    window.location.href = 'dashboard.html';
-  });
-
-  // New Account -> Welcome
-  signupSubmit.addEventListener('click', (e) => {
-    e.preventDefault();
-    const username = signupUsernameInput.value.trim();
-    if (username) localStorage.setItem('softhelmUsername', username);
-    window.location.href = 'welcome.html';
-  });
+    if (data.success) {
+      username = newUsername;
+      localStorage.setItem('softhelmUsername', newUsername);
+      displayNameEl.innerText = username;
+      alert('Username updated on server');
+    } else {
+      alert('Failed to update username');
+      usernameInput.value = username; // revert
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Server error updating username');
+    usernameInput.value = username;
+  }
 });
+
+// Example: add legendary item
+async function addLegendaryItem(itemName) {
+  try {
+    const res = await fetch(`${backendURL}/addItem`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, item: itemName })
+    });
+    const data = await res.json();
+    if (data.success) {
+      loadUserData(); // refresh dashboard
+    } else {
+      alert('Failed to add item');
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// Initial load
+loadUserData();
