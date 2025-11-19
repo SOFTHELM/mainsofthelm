@@ -1,83 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - Softhelm</title>
+</head>
+<body>
+
+<h1>Softhelm Dashboard</h1>
+<p id="displayName"></p>
+
+<div>
+  <label>Username: <input type="text" id="usernameDisplay"></label><br>
+  <label>Level: <span id="userLevel">1</span></label><br>
+</div>
+
+<div id="legendaryItems"></div>
+
 <script>
-const API_BASE = "/api";
-let currentUser = "Initiate";
+const backendURL = "https://mainsofthelm.onrender.com";
+const username = localStorage.getItem('softhelmUsername') || 'Initiate';
 
-// Load user data
-async function loadDashboard() {
+document.getElementById('displayName').innerText = username;
+document.getElementById('usernameDisplay').value = username;
+
+async function loadUserData() {
   try {
-    const res = await fetch(`${API_BASE}/getUserData?username=${currentUser}`);
+    const res = await fetch(`${backendURL}/getUserData?username=${username}`);
     const data = await res.json();
+    document.getElementById('userLevel').innerText = data.level || 1;
 
-    document.getElementById("userPFP").src = data.pfp || "";
-    document.getElementById("usernameDisplay").value = data.username || currentUser;
-    document.getElementById("displayName").textContent = data.displayName || currentUser;
-    document.getElementById("userLevel").textContent = data.level || 1;
-
-    const legendaryList = document.getElementById("legendaryList");
-    legendaryList.innerHTML = "";
+    const listDiv = document.getElementById('legendaryItems');
+    listDiv.innerHTML = '';
     (data.items || []).forEach(item => {
-      const div = document.createElement("div");
-      div.className = "item-box";
-      div.textContent = item;
-      legendaryList.appendChild(div);
+      const div = document.createElement('div');
+      div.innerText = item;
+      listDiv.appendChild(div);
     });
-
-    const questList = document.getElementById("questList");
-    questList.innerHTML = "";
-    (data.quests || []).forEach(q => {
-      const li = document.createElement("li");
-      li.textContent = q;
-      questList.appendChild(li);
-    });
-
-    const chatBox = document.getElementById("chatBox");
-    chatBox.innerHTML = "";
-    (data.chat || []).forEach(c => {
-      const div = document.createElement("div");
-      div.className = "message";
-      div.innerHTML = `<strong>${c.user}:</strong> ${c.text}`;
-      chatBox.appendChild(div);
-    });
-    chatBox.scrollTop = chatBox.scrollHeight;
-
-  } catch (err) {
-    console.error("Failed to load dashboard", err);
+  } catch(e) {
+    console.warn('Failed to load user data', e);
   }
 }
 
-// Update PFP
-document.getElementById("updatePFPBtn").addEventListener("click", async () => {
-  const newPFP = prompt("Enter new profile picture URL:");
-  document.getElementById("userPFP").src = newPFP;
-
-  await fetch(`${API_BASE}/saveTraits`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username: currentUser, pfp: newPFP })
-  });
-});
-
-// Send chat
-document.getElementById("sendBtn").addEventListener("click", async () => {
-  const msgInput = document.getElementById("chatInput");
-  const text = msgInput.value.trim();
-  if (!text) return;
-
-  const res = await fetch(`${API_BASE}/saveChat`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username: currentUser, text })
-  });
-  if (res.ok) {
-    const chatBox = document.getElementById("chatBox");
-    const div = document.createElement("div");
-    div.className = "message";
-    div.innerHTML = `<strong>${currentUser}:</strong> ${text}`;
-    chatBox.appendChild(div);
-    chatBox.scrollTop = chatBox.scrollHeight;
-    msgInput.value = "";
-  }
-});
-
-window.addEventListener("DOMContentLoaded", loadDashboard);
+loadUserData();
 </script>
+
+</body>
+</html>
