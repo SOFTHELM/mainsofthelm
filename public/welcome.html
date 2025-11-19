@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Welcome - Softhelm</title>
+<link rel="stylesheet" href="welcome.css">
 </head>
 <body>
 
@@ -18,30 +19,6 @@
 
 <button id="enterRealmBtn">Enter Realm</button>
 
-<script>
-const backendURL = "https://mainsofthelm.onrender.com";
-const username = localStorage.getItem('softhelmUsername') || 'Initiate';
-document.getElementById('username-display').innerText = `✶ ${username} ✶`;
-
-document.getElementById('enterRealmBtn').onclick = async () => {
-  const traits = {
-    gender: document.getElementById('gender').value,
-    hair: document.getElementById('hair').value,
-    eyes: document.getElementById('eyes').value
-  };
-
-  try {
-    await fetch(`${backendURL}/saveTraits`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, traits })
-    });
-    window.location.href = 'dashboard.html';
-  } catch (e) {
-    alert('Failed to save traits to server');
-  }
-};
-</script>
-
+<script src="welcome.js" defer></script>
 </body>
 </html>
