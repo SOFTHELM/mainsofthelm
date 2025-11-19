@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const backendURL = "https://mainsofthelm.onrender.com"; // your Render backend
+  const backendURL = "https://mainsofthelm.onrender.com";
 
   const mainBox = document.getElementById('main-box');
   const signinBox = document.getElementById('signin-box');
@@ -12,6 +12,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const signinSubmit = document.getElementById('signinSubmit');
   const signupSubmit = document.getElementById('signupSubmit');
+
+  const signinUsernameInput = document.getElementById('signin-username');
+  const signinPasswordInput = document.getElementById('signin-password');
+  const signupUsernameInput = document.getElementById('signup-username');
+  const signupPasswordInput = document.getElementById('signup-password');
+  const signupConfirmInput = document.getElementById('signup-confirm');
+  const signupEmailInput = document.getElementById('signup-email');
+  const signupFirstnameInput = document.getElementById('signup-firstname');
+  const signupLastnameInput = document.getElementById('signup-lastname');
 
   // Show/hide forms
   signInBtn.addEventListener('click', () => {
@@ -31,11 +40,11 @@ document.addEventListener('DOMContentLoaded', () => {
     mainBox.classList.remove('hidden');
   });
 
-  // Sign In
+  // Sign In with verification check
   signinSubmit.addEventListener('click', async (e) => {
     e.preventDefault();
-    const username = document.getElementById('signin-username').value.trim();
-    const password = document.getElementById('signin-password').value.trim();
+    const username = signinUsernameInput.value.trim();
+    const password = signinPasswordInput.value.trim();
 
     try {
       const res = await fetch(`${backendURL}/login`, {
@@ -44,30 +53,36 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({ username, password })
       });
       const data = await res.json();
-      if (data.success) {
+
+      if(data.success){
+        if(!data.verified){
+          document.getElementById('signin-message').textContent = "Please verify your email before signing in.";
+          return;
+        }
+        localStorage.setItem('softhelmUsername', username);
         window.location.href = 'welcome.html';
       } else {
         document.getElementById('signin-message').textContent = data.message || 'Login failed';
       }
-    } catch (err) {
+    } catch(err){
       console.error(err);
       document.getElementById('signin-message').textContent = 'Server error';
     }
   });
 
-  // Register
+  // Register (with email verification)
   signupSubmit.addEventListener('click', async (e) => {
     e.preventDefault();
     const payload = {
-      firstname: document.getElementById('signup-firstname').value.trim(),
-      lastname: document.getElementById('signup-lastname').value.trim(),
-      email: document.getElementById('signup-email').value.trim(),
-      username: document.getElementById('signup-username').value.trim(),
-      password: document.getElementById('signup-password').value.trim(),
-      confirm: document.getElementById('signup-confirm').value.trim()
+      firstname: signupFirstnameInput.value.trim(),
+      lastname: signupLastnameInput.value.trim(),
+      email: signupEmailInput.value.trim(),
+      username: signupUsernameInput.value.trim(),
+      password: signupPasswordInput.value.trim(),
+      confirm: signupConfirmInput.value.trim()
     };
 
-    if (payload.password !== payload.confirm) {
+    if(payload.password !== payload.confirm){
       document.getElementById('signup-message').textContent = "Passwords do not match";
       return;
     }
@@ -79,12 +94,14 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify(payload)
       });
       const data = await res.json();
-      if (data.success) {
-        window.location.href = 'welcome.html';
+
+      if(data.success){
+        document.getElementById('signup-message').textContent = 
+          "Account created! Check your email to verify before signing in.";
       } else {
         document.getElementById('signup-message').textContent = data.message || 'Registration failed';
       }
-    } catch (err) {
+    } catch(err){
       console.error(err);
       document.getElementById('signup-message').textContent = 'Server error';
     }
