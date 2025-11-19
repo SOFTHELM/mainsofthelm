@@ -1,40 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Welcome to Softhelm</title>
-
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/SOFTHELM/mainsofthelm@main/public/welcome.css">
-</head>
-<body>
-
-<div class="generator-page">
-  <div class="welcome-header">
-    <span class="softhelm">Welcome to Softhelm</span>
-    <p class="username-display" id="username-display"></p>
-  </div>
-
-  <div class="generator-content">
-    <section class="left-panel">
-      Trait selection coming soon...
-    </section>
-
-    <section class="right-panel">
-      PFP preview coming soon...
-    </section>
-  </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/gh/SOFTHELM/mainsofthelm@main/public/welcome.js" defer></script>
-
 <script>
-  // Load username from signup form → URL
-  const params = new URLSearchParams(window.location.search);
-  const user = params.get("user") || "New User";
+const backendURL = "/api";
 
-  document.getElementById("username-display").textContent = user;
+// Trait definitions
+const traits = {
+  gender: ["Andro", "Femme", "Masc"],
+  hair: ["Silver", "Black", "Blonde", "Pastel"],
+  eyes: ["Glitch", "Crystal", "Void"],
+  skin: ["Porcelain", "Bronze", "Ivory"],
+  outfit: ["Cyber Street", "Monk", "Rogue"],
+  accessory: ["Halo Wire", "Ear Chain", "Visor"],
+  mood: ["Serene", "Chaotic", "Stoic"],
+  species: ["Human", "Post-Human", "Celestial"],
+  aura: ["Holo Mist", "Firelight", "Shadow Veil"],
+  background: ["Dream Temple", "Voidfield", "Citylight"]
+};
+
+// Track current selections
+const current = Object.fromEntries(Object.keys(traits).map(k => [k, 0]));
+
+function changeTrait(cat, dir) {
+  const max = traits[cat].length;
+  current[cat] = (current[cat] + dir + max) % max;
+  document.getElementById(`${cat}-display`).innerText = traits[cat][current[cat]];
+}
+
+function randomizeTraits() {
+  for (const cat in traits) {
+    current[cat] = Math.floor(Math.random() * traits[cat].length);
+    document.getElementById(`${cat}-display`).innerText = traits[cat][current[cat]];
+  }
+}
+
+async function enterRealm() {
+  const username = document.getElementById("username-display").textContent.replace(/✶/g, '').trim();
+  const pfp = document.getElementById("preview-image").src;
+
+  try {
+    const res = await fetch(`${backendURL}/saveTraits`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, traits: current, pfp })
+    });
+    const data = await res.json();
+    if (data.success) window.location.href = "dashboard.html";
+  } catch (err) {
+    console.error("Failed to save to server", err);
+    alert("Failed to save traits. Try again.");
+  }
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  const username = new URLSearchParams(window.location.search).get("username") || "Initiate";
+  document.getElementById("username-display").textContent = `✶ ${username} ✶`;
+});
 </script>
-
-</body>
-</html>
